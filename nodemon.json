@@ -1,0 +1,12 @@
+{
+    "verbose": true,
+    "ext": "js",
+    "env": {
+        "NODE_ENV": "development"
+    },
+    "ignore": [
+        ".git",
+        "node_modules/**/node_modules"
+    ],
+    "restartable": "rs"
+}
