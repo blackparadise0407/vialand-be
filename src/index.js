@@ -24,9 +24,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// schedule.scheduleJob('*/14 * * * *', function () {
-//   fetch('link_to_app');
-// });
+schedule.scheduleJob('*/14 * * * *', function () {
+  fetch('https://vialand.herokuapp.com/ping');
+});
 
 app.get('/ping', (req, res) => {
   res.send('pong').status(200);
