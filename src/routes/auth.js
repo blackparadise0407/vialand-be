@@ -1,17 +1,8 @@
 const router = require('express').Router();
-const qs = require('qs');
 const fetch = require('node-fetch');
-const catchAsync = require('../common/catchAsync');
-const { googleJWTClient, removeTrailingDot } = require('../utils');
-const { AppResponse } = require('../common');
 
-router.get(
-  '/',
-  catchAsync(async (req, res) => {
-    const data = await googleJWTClient.authorize();
-    res.json(new AppResponse(removeTrailingDot(data.access_token)));
-  }),
-);
+const catchAsync = require('../common/catchAsync');
+const { AppResponse } = require('../common');
 
 router.get(
   '/refresh',
