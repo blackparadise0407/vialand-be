@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
 const schedule = require('node-schedule');
+const fetch = require('node-fetch');
 
 const { notFound, error } = require('./middlewares/error');
 const { AppResponse } = require('./common');
@@ -21,7 +22,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 schedule.scheduleJob('*/14 * * * *', function () {
-  fetch('https://vialand.herokuapp.com/ping');
+  fetch('https://vialand.herokuapp.com/ping')
+    .then((res) => res.text())
+    .then((data) => console.log(data))
+    .catch((e) => console.log(e));
 });
 
 app.get('/ping', (req, res) => {
