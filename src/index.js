@@ -35,6 +35,7 @@ app.get('/ping', (req, res) => {
 });
 
 app.use('/auth', auth, require('./routes/auth'));
+app.use('/google', require('./routes/google'));
 app.post(
   '/news-submission',
   auth,
