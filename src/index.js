@@ -74,6 +74,7 @@ app.get('/ping', (req, res) => {
 
 app.use('/auth', auth, require('./routes/auth'));
 app.use('/google', require('./routes/google'));
+app.use('/news', auth, require('./routes/news'));
 app.post(
   '/news-submission',
   auth,
