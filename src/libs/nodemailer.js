@@ -28,7 +28,25 @@ const newsSubmission = async ({ name, link }) =>
     `,
   });
 
+// Refresh token notification
+const refreshTokenNotification = async ({ link }) =>
+  await transporter.sendMail({
+    from: 'no-reply@vialand.vn',
+    to:
+      process.env.NODE_ENV === 'development'
+        ? 'blackparadise0407@gmail.com'
+        : 'richardlee.via@gmail.com',
+    subject: 'Refresh token',
+    text: `
+    Token đã hết hạn, vui lòng bấm vào <a href="${link}">link</a> để gia hạn token
+    `,
+    html: `
+    <p>Token đã hết hạn, vui lòng bấm vào <a href="${link}">link</a> để gia hạn token</p>
+    `,
+  });
+
 module.exports = {
   transporter,
   newsSubmission,
+  refreshTokenNotification,
 };

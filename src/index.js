@@ -5,10 +5,15 @@ const cors = require('cors');
 const morgan = require('morgan');
 const schedule = require('node-schedule');
 const fetch = require('node-fetch');
+const qs = require('qs');
 
 const { notFound, error } = require('./middlewares/error');
 const { AppResponse } = require('./common');
-const { newsSubmission } = require('./libs/nodemailer');
+const {
+  newsSubmission,
+  refreshTokenNotification,
+} = require('./libs/nodemailer');
+const { db } = require('./libs/firebase');
 const catchAsync = require('./common/catchAsync');
 const { auth } = require('./middlewares/auth');
 
@@ -29,6 +34,39 @@ if (process.env.NODE_ENV !== 'development') {
       .catch((e) => console.log(e));
   });
 }
+
+schedule.scheduleJob('0 * * * *', async function () {
+  const tokenRef = db.collection('tokens');
+  const snapshot = await tokenRef.get();
+  const tokens = [];
+  snapshot.docs.forEach((doc) => {
+    tokens.push({
+      id: doc.id,
+      ...doc.data(),
+    });
+  });
+  if (tokens.length) {
+    const { expiredAt } = tokens[0];
+    if (new Date(expiredAt * 1000) < new Date()) {
+      try {
+        const link =
+          'https://accounts.google.com/o/oauth2/v2/auth?' +
+          qs.stringify({
+            client_id: process.env.GOOGLE_CLIENT_ID,
+            redirect_uri: process.env.REDIRECT_URI,
+            scope: 'https://www.googleapis.com/auth/drive',
+            response_type: 'code',
+            access_type: 'offline',
+          });
+
+        await tokenRef.doc(tokens[0].id).delete();
+        await refreshTokenNotification({ link });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+});
 
 app.get('/ping', (req, res) => {
   res.send('pong').status(200);
