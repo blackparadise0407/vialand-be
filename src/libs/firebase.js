@@ -3,7 +3,7 @@ const { initializeApp } = require('firebase-admin/app');
 
 const serviceAccount = {
   type: 'service_account',
-  project_id: process.env.FB_SA_PROJECT_ID,
+  project_id: process.env.FBSA_PROJECT_ID,
   private_key_id: process.env.FBSA_PRIVATE_KEY_ID,
   private_key: process.env.FBSA_PRIVATE_KEY.replace(/\\n/g, '\n'),
   client_email: process.env.FBSA_CLIENT_EMAIL,
