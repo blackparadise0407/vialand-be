@@ -10,7 +10,7 @@ const { getQueryParams } = require('../utils');
 router.get(
   '/',
   catchAsync(async (req, res) => {
-    const { ward, province, district, action, published } = req.query;
+    const { ward, province, district, action, published, slug } = req.query;
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
     const skip = (page - 1) * limit;
@@ -30,6 +30,9 @@ router.get(
     }
     if (published) {
       query = query.where('published', '==', published === 'true');
+    }
+    if (slug) {
+      query = query.where('slug', '==', slug);
     }
 
     query = query.orderBy('createdAt', 'desc');
