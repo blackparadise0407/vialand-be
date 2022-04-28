@@ -26,14 +26,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-if (process.env.NODE_ENV !== 'development') {
-  schedule.scheduleJob('*/14 * * * *', function () {
-    fetch('https://vialand.herokuapp.com/ping')
-      .then((res) => res.text())
-      .then((data) => console.log(data))
-      .catch((e) => console.log(e));
-  });
-}
+// if (process.env.NODE_ENV !== 'development') {
+//   schedule.scheduleJob('*/14 * * * *', function () {
+//     fetch('https://vialand.herokuapp.com/ping')
+//       .then((res) => res.text())
+//       .then((data) => console.log(data))
+//       .catch((e) => console.log(e));
+//   });
+// }
 
 schedule.scheduleJob('0 * * * *', async function () {
   const tokenRef = db.collection('tokens');
