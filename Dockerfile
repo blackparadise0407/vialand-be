@@ -8,7 +8,7 @@ RUN yarn
 
 COPY . .
 
-EXPOSE 8081
+EXPOSE 5000
 
 CMD ["yarn", "start"]
 
