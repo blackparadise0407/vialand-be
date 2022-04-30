@@ -4,7 +4,6 @@ const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
 const schedule = require('node-schedule');
-const fetch = require('node-fetch');
 const qs = require('qs');
 
 const { notFound, error } = require('./middlewares/error');
@@ -13,9 +12,10 @@ const {
   newsSubmission,
   refreshTokenNotification,
 } = require('./libs/nodemailer');
-const { db } = require('./libs/firebase');
 const catchAsync = require('./common/catchAsync');
 const { auth } = require('./middlewares/auth');
+const { renewRefreshToken } = require('./utils');
+const { db } = require('./libs/firebase');
 
 const app = express();
 
@@ -36,36 +36,7 @@ app.use(express.urlencoded({ extended: false }));
 // }
 
 schedule.scheduleJob('0 * * * *', async function () {
-  const tokenRef = db.collection('tokens');
-  const snapshot = await tokenRef.get();
-  const tokens = [];
-  snapshot.docs.forEach((doc) => {
-    tokens.push({
-      id: doc.id,
-      ...doc.data(),
-    });
-  });
-  if (tokens.length) {
-    const { expiredAt } = tokens[0];
-    if (new Date(expiredAt * 1000) < new Date()) {
-      try {
-        const link =
-          'https://accounts.google.com/o/oauth2/v2/auth?' +
-          qs.stringify({
-            client_id: process.env.GOOGLE_CLIENT_ID,
-            redirect_uri: process.env.REDIRECT_URI,
-            scope: 'https://www.googleapis.com/auth/drive',
-            response_type: 'code',
-            access_type: 'offline',
-          });
-
-        await tokenRef.doc(tokens[0].id).delete();
-        await refreshTokenNotification({ link });
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  }
+  await renewRefreshToken();
 });
 
 app.get('/ping', (req, res) => {
@@ -84,6 +55,37 @@ app.post(
     res.json(new AppResponse(null, 'Gửi email thành công'));
   }),
 );
+app.get('/renew', auth, async (_, res, next) => {
+  try {
+    const tokenRef = db.collection('tokens');
+    const snapshot = await tokenRef.get();
+    const tokens = [];
+    snapshot.docs.forEach((doc) => {
+      tokens.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+    if (tokens.length) {
+      await tokenRef.doc(tokens[0].id).delete();
+    }
+    const link =
+      'https://accounts.google.com/o/oauth2/v2/auth?' +
+      qs.stringify({
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        redirect_uri: process.env.REDIRECT_URI,
+        scope: 'https://www.googleapis.com/auth/drive',
+        response_type: 'code',
+        access_type: 'offline',
+      });
+
+    await refreshTokenNotification({ link });
+    res.send('Vui lòng kiểm tra email để tiến hành làm mới token');
+  } catch (e) {
+    console.log(e);
+    next(e);
+  }
+});
 
 app.use(notFound);
 app.use(error);
