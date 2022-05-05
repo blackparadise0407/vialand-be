@@ -1,11 +1,8 @@
 const router = require('express').Router();
-const fetch = require('node-fetch');
-const {} = require('firebase-admin/firestore');
 
 const catchAsync = require('../common/catchAsync');
 const { db } = require('../libs/firebase');
 const { AppResponse } = require('../common');
-const { getQueryParams } = require('../utils');
 
 router.get(
   '/',
