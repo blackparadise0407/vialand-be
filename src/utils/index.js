@@ -30,7 +30,6 @@ module.exports.renewRefreshToken = async () => {
             access_type: 'offline',
           });
 
-        await tokenRef.doc(tokens[0].id).delete();
         await refreshTokenNotification({ link });
       } catch (e) {
         console.log(e);

@@ -4,12 +4,24 @@ const dayjs = require('dayjs');
 
 const catchAsync = require('../common/catchAsync');
 const { db } = require('../libs/firebase');
-const { AppResponse } = require('../common');
 const { getQueryParams } = require('../utils');
 
 router.get(
   '/callback',
   catchAsync(async (req, res) => {
+    const tokenRef = db.collection('tokens');
+    const snapshot = await tokenRef.get();
+    const tokens = [];
+    snapshot.docs.forEach((doc) => {
+      tokens.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+    if (tokens.length) {
+      await tokenRef.doc(tokens[0].id).delete();
+    }
+
     const { code, scope } = getQueryParams(req.query);
     const response = await fetch('https://www.googleapis.com/oauth2/v4/token', {
       method: 'POST',
@@ -26,11 +38,13 @@ router.get(
     if (data.error) {
       throw data;
     }
+
     await db.collection('tokens').add({
       value: data.refresh_token,
       expiredAt: dayjs().add(6, 'day').unix(),
     });
-    res.json(new AppResponse('Gia hạn token thành công'));
+
+    res.send(`<h3>Gia hạn token thành công</h3>`);
   }),
 );
 
