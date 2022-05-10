@@ -17,7 +17,7 @@ const newsSubmission = async ({ name, link }) =>
     to:
       process.env.NODE_ENV === 'development'
         ? 'blackparadise0407@gmail.com'
-        : 'richardlee.via@gmail.com',
+        : 'vialand.com@gmail.com',
     subject: 'Xác nhận đăng tin',
     text: `
     Khách hàng vừa đăng 1 tin mới: ${name}
