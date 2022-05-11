@@ -18,6 +18,10 @@ router.get(
       });
     });
 
+    if (!tokens.length) {
+      throw new Error('Vui lòng liên hệ quản trị viên để làm mới token');
+    }
+
     const response = await fetch('https://www.googleapis.com/oauth2/v4/token', {
       method: 'POST',
       body: JSON.stringify({
