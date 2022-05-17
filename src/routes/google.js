@@ -23,7 +23,7 @@ router.get(
     }
 
     const { code, scope } = getQueryParams(req.query);
-    const response = await fetch('https://www.googleapis.com/oauth2/v4/token', {
+    const response = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       body: JSON.stringify({
         code,
