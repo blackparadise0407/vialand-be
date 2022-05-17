@@ -28,6 +28,7 @@ module.exports.renewRefreshToken = async () => {
             scope: 'https://www.googleapis.com/auth/drive',
             response_type: 'code',
             access_type: 'offline',
+            prompt: 'consent',
           });
 
         await refreshTokenNotification({ link });
