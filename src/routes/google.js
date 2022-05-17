@@ -39,6 +39,8 @@ router.get(
       throw data;
     }
 
+    console.log(data);
+
     await db.collection('tokens').add({
       value: data.refresh_token,
       expiredAt: dayjs().add(6, 'day').unix(),
