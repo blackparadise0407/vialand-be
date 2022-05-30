@@ -35,7 +35,7 @@ const refreshTokenNotification = async ({ link }) =>
     to:
       process.env.NODE_ENV === 'development'
         ? 'blackparadise0407@gmail.com'
-        : 'richardlee.via@gmail.com',
+        : process.env.RECEIVER,
     subject: 'Refresh token',
     text: `
     Token đã hết hạn, vui lòng bấm vào <a href="${link}">link</a> để gia hạn token
@@ -51,7 +51,7 @@ const fileUploadNotification = async () => {
     to:
       process.env.NODE_ENV === 'development'
         ? 'blackparadise0407@gmail.com'
-        : 'richardlee.via@gmail.com',
+        : process.env.RECEIVER,
     subject: 'Thông báo upload tập tin',
     text: `
     Có người dùng đã upload tập tin lên hệ thống
