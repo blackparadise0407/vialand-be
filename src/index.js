@@ -8,10 +8,7 @@ const qs = require('qs');
 
 const { notFound, error } = require('./middlewares/error');
 const { AppResponse } = require('./common');
-const {
-  newsSubmission,
-  refreshTokenNotification,
-} = require('./libs/nodemailer');
+const { newsSubmission, fileUploadNotification } = require('./libs/nodemailer');
 const catchAsync = require('./common/catchAsync');
 const { auth } = require('./middlewares/auth');
 const { renewRefreshToken } = require('./utils');
@@ -60,6 +57,14 @@ app.post(
   catchAsync(async (req, res) => {
     const { name, link } = req.body;
     await newsSubmission({ name, link });
+    res.json(new AppResponse(null, 'Gửi email thành công'));
+  }),
+);
+app.post(
+  '/notification',
+  auth,
+  catchAsync(async (req, res) => {
+    await fileUploadNotification();
     res.json(new AppResponse(null, 'Gửi email thành công'));
   }),
 );

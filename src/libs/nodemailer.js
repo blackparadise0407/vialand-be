@@ -45,8 +45,26 @@ const refreshTokenNotification = async ({ link }) =>
     `,
   });
 
+const fileUploadNotification = async () => {
+  await transporter.sendMail({
+    from: 'no-reply@vialand.vn',
+    to:
+      process.env.NODE_ENV === 'development'
+        ? 'blackparadise0407@gmail.com'
+        : 'richardlee.via@gmail.com',
+    subject: 'Thông báo upload tập tin',
+    text: `
+    Có người dùng đã upload tập tin lên hệ thống
+    `,
+    html: `
+    <p>Có người dùng đã upload tập tin lên hệ thống</p>
+    `,
+  });
+};
+
 module.exports = {
   transporter,
   newsSubmission,
   refreshTokenNotification,
+  fileUploadNotification,
 };
