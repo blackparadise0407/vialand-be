@@ -12,7 +12,6 @@ const { newsSubmission, fileUploadNotification } = require('./libs/nodemailer');
 const catchAsync = require('./common/catchAsync');
 const { auth } = require('./middlewares/auth');
 const { renewRefreshToken } = require('./utils');
-const { db } = require('./libs/firebase');
 
 const app = express();
 
@@ -30,15 +29,6 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-// if (process.env.NODE_ENV !== 'development') {
-//   schedule.scheduleJob('*/14 * * * *', function () {
-//     fetch('https://vialand.herokuapp.com/ping')
-//       .then((res) => res.text())
-//       .then((data) => console.log(data))
-//       .catch((e) => console.log(e));
-//   });
-// }
 
 schedule.scheduleJob('0 * * * *', async function () {
   await renewRefreshToken();
