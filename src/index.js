@@ -77,9 +77,6 @@ app.get('/renew', auth, async (_, res, next) => {
     next(e);
   }
 });
-app.get('/test', (req, res) => {
-  res.send("work")
-})
 
 app.use(notFound);
 app.use(error);

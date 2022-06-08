@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const fetch = require('node-fetch');
-const qs = require('qs');
 
 const catchAsync = require('../common/catchAsync');
 const { db } = require('../libs/firebase');

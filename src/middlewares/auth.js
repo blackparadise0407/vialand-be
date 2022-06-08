@@ -1,5 +1,4 @@
 const { AppError } = require('../common');
-const { catchAsync } = require('../common/catchAsync');
 
 module.exports.auth = async (req, res, next) => {
   const {
